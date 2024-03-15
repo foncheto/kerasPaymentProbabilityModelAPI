@@ -84,7 +84,6 @@ def nn_model_predict(data:pd.DataFrame,path:str):
   print('Red model loaded')
   df_data = data
   colum_dim = df_data.shape[1]
-  print(model.summary())
   df_data = df_data.to_numpy()
   df_data = df_data.reshape((-1, 1, colum_dim))
   new_data_pred = model.predict(df_data)
@@ -99,8 +98,8 @@ def predict():
         data = data['data']
         df = pd.DataFrame(data)
         
-        red_data = nn_model_predict(df,'models/best_keras_model.keras')
-        bayes_data = bayes_nn_model_predict(df,'models/best_bayes_model.h5',10)
+        red_data = nn_model_predict(df,'models/best_keras_model_14_03_2024.keras')
+        bayes_data = bayes_nn_model_predict(df,'models/best_bayes_model_14_03_2024.h5',10)
         # return the stat as a json
         return jsonify({'data':{'red': red_data.tolist(), 'bayes': bayes_data.tolist()}})
 
