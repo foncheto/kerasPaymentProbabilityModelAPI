@@ -36,29 +36,32 @@ def posterior(kernel_size, bias_size, dtype=None):
 def bayes_nn_structure(colum_dim):
   new_model = tf.keras.models.Sequential([
     tf.keras.layers.Flatten(input_shape=(1,colum_dim)),
- 
-    tf.keras.layers.Dense(60,
+
+    tf.keras.layers.Dense(80,
                                     activation='relu'),
     tf.keras.layers.Dropout(0.5),
- 
-    tf.keras.layers.Dense(40,
+
+    tf.keras.layers.Dense(50,
+
                                     activation='relu'),
     tfp.layers.DenseVariational(40,
                                       make_prior_fn=prior,
                                 make_posterior_fn=posterior,
                                     activation='relu'),
     tf.keras.layers.Dropout(0.5),
- 
-    tf.keras.layers.Dense(20, activation='relu'),
+
+
+
+    tf.keras.layers.Dense(30, activation='relu'),
     tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(10, activation='relu'),
+    tf.keras.layers.Dense(20, activation='relu'),
     tf.keras.layers.Dropout(0.5),
     tf.keras.layers.Dense(colum_dim, activation='softmax'),
     tf.keras.layers.Dropout(0.1),
- 
+
     tf.keras.layers.Dense(1,
                           activation='sigmoid'),
- 
+
     ])
   return new_model
 
@@ -70,7 +73,7 @@ def bayes_nn_model_predict(df_data:pd.DataFrame,path:str,amount:int):
   print('Bayes model loaded')
   df_data = df_data.to_numpy()
   df_data = df_data.reshape((-1, 1, colum_dim))
-  data_tuple = tuple([np.round(model.predict(df_data,verbose=0)[:]*100,2) for i in range(10)])
+  data_tuple = tuple([np.round(model.predict(df_data,verbose=0)[:]*100,2) for i in range(amount)])
   mean_data= np.mean(np.concatenate(data_tuple,axis=1),axis=1)[:, np.newaxis]
   min_data = np.min(np.concatenate(data_tuple,axis=1),axis=1)[:, np.newaxis]
   max_data = np.max(np.concatenate(data_tuple,axis=1),axis=1)[:, np.newaxis]
@@ -98,8 +101,8 @@ def predict():
         data = data['data']
         df = pd.DataFrame(data)
         
-        red_data = nn_model_predict(df,'models/best_keras_model_14_03_2024.keras')
-        bayes_data = bayes_nn_model_predict(df,'models/best_bayes_model_14_03_2024.h5',10)
+        red_data = nn_model_predict(df,'models/best_keras_model_20_03_2024.keras')
+        bayes_data = bayes_nn_model_predict(df,'models/best_bayes_model_weights_20_03_2024.h5',10)
         # return the stat as a json
         return jsonify({'data':{'red': red_data.tolist(), 'bayes': bayes_data.tolist()}})
 
